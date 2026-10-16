@@ -1,22 +1,26 @@
 import sys
-from Extra import load_experiment, get_dataset
+
+from Datasets import resolve_datasets
+from Experiment import create_experiment_dir, load_experiment
+from Rag.pipeline import run_rag
+
 
 def main():
     if len(sys.argv) != 2:
-        raise SystemExit("python main.py <experiment_name>")
+        raise SystemExit("python Main.py <experiment_name>")
 
-    config = load_experiment(sys.argv[1])
+    name = sys.argv[1]
+    config = load_experiment(name)
 
-    datasets = [
-        get_dataset(name)
-        for name in config.get("Data", [])
-    ]
+    rag_names = config.get("Rag", [])
+    if isinstance(rag_names, str):
+        rag_names = [rag_names]
 
-    print(config)
-    print(datasets)
+    datasets = resolve_datasets(config.get("Data", []))
+    output_dir = create_experiment_dir(name, config.get("Description", ""))
+
+    run_rag(rag_names, datasets, output_dir)
 
 
 if __name__ == "__main__":
     main()
-
-
