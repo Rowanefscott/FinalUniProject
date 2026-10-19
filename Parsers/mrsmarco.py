@@ -7,9 +7,7 @@ def parse_mrsmarco(input_path, output_path=None):
         output_path = Path(__file__).resolve().parent / "msmarco.json"
     else:
         output_path = Path(output_path)
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
     passages = []
 
     with open(input_path, "r", encoding="utf-8") as source:
@@ -20,13 +18,10 @@ def parse_mrsmarco(input_path, output_path=None):
                 entry = json.loads(line)
             except json.JSONDecodeError as error:
                 raise ValueError(f"Invalid JSON on line {line_number}: {error}") from error
-
             parsed = {
                 "id": entry.get("_id", entry.get("id")),
                 "text": entry.get("text", ""),
-                "metadata": [{key: value} for key, value in entry.items() if key not in ("_id", "id", "text")],
-            }
-
+                "metadata": [{key: value} for key, value in entry.items() if key not in ("_id", "id", "text")],}
             passages.append(parsed)
 
     with open(output_path, "w", encoding="utf-8") as target:

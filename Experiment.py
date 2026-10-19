@@ -5,20 +5,17 @@ from Utils import load_json
 
 def load_experiment(name):
     experiments = load_json(EXPERIMENTS_FILE)
-
     if name not in experiments:
         raise ValueError(f"Experiment '{name}' not found")
     return experiments[name]
 
 def create_experiment_dir(name, description=""):
     EXPERIMENTS_DIR.mkdir(parents=True, exist_ok=True)
-
     folder = EXPERIMENTS_DIR / name
     count = 2
     while folder.exists():
         folder = EXPERIMENTS_DIR / f"{name}{count}"
         count += 1
-
     folder.mkdir()
     (folder / "run_info.txt").write_text(
         f"Experiment: {name}\n"
