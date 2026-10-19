@@ -1,4 +1,5 @@
 # Manages datsets and their paths to be used throughout program
+from collections import namedtuple
 from pathlib import Path
 from Config import DATASETS_DIR, UNPARSED_DIR
 from Parsers.hotpotQA import parse_hotpot
@@ -24,9 +25,15 @@ def get_dataset(name):
     parser(input_path, output_path)
     return output_path
 
+DataEntry = namedtuple("DataEntry", "path queries selection")
+
 def resolve_datasets(entries):
     return [
-        (get_dataset(dataset), DATASETS_DIR / Path(queries).with_suffix(".json"), *selection)
+        DataEntry(
+            get_dataset(dataset),
+            DATASETS_DIR / Path(queries).with_suffix(".json"),
+            selection[0] if selection else "",
+        )
         for dataset, queries, *selection in entries
     ]
 

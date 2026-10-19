@@ -2,7 +2,7 @@
 import json
 import urllib.error
 import urllib.request
-from Utils import save_json
+from Utils import merge_json
 
 LM_STUDIO_URL = "http://localhost:1234/v1"
 SYSTEM_PROMPT = "Summarise the provided passages so they answer the question. Use only the passages."
@@ -38,13 +38,14 @@ def generate_summaries(runs, output_dir):
     for label, results in runs.items():
         summaries = {}
         for query_id, entry in results.items():
+            query_text = entry["query"]
             summaries[query_id] = {
-                "query": entry["query"],
-                "summary": summarise(model, entry["query"], entry["results"]),
+                "query": query_text,
+                "summary": summarise(model, query_text, entry["results"]),
             }
-            print(f"Summarised query {query_id} ({label})")
+            print(f"Completed query {query_id}: {query_text}")
         all_summaries[label] = summaries
         output_path = output_dir / f"{label}_summaries.json"
-        save_json(summaries, output_path)
+        merge_json(summaries, output_path)
         print(f"Summaries saved to {output_path}")
     return all_summaries

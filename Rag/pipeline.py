@@ -1,7 +1,7 @@
 # Manages chosen rag method/s
 import importlib
 from Datasets import select_queries
-from Utils import load_json, save_json
+from Utils import load_json, merge_json
 
 TOP_K = 10
 
@@ -21,31 +21,36 @@ def search_queries(retrieve, queries):
             "query": query_text,
             "results": retrieve(query_text, TOP_K),
         }
-        print(f"Completed query {query_id}: {query_text}")
     return results
 
 def use_all_documents(datasets):
     runs = {}
-    for dataset_path, query_path, *selection in datasets:
-        documents = load_documents(dataset_path)
-        queries = select_queries(load_json(query_path), *selection)
-        runs[dataset_path.stem] = {
+    for entry in datasets:
+        documents = load_documents(entry.path)
+        queries = select_queries(load_json(entry.queries), entry.selection)
+        runs[entry.path.stem] = {
             query_id: {"query": query_text, "results": documents}
             for query_id, query_text in queries.items()
         }
     return runs
 
+retrievers = {}
+
+def get_retriever(rag_name, rag, entry):
+    key = (rag_name, entry.path.stem)
+    if key not in retrievers:
+        retrievers[key] = rag.build_retriever(load_documents(entry.path), entry.path.stem)
+    return retrievers[key]
+
 def run_rag(rag_names, datasets, output_dir):
     runs = {}
     for rag_name in rag_names:
         rag = importlib.import_module(f"Rag.{rag_name}")
-        for dataset_path, query_path, *selection in datasets:
-            documents = load_documents(dataset_path)
-            retrieve = rag.build_retriever(documents, dataset_path.stem)
-            queries = select_queries(load_json(query_path), *selection)
+        for entry in datasets:
+            retrieve = get_retriever(rag_name, rag, entry)
+            queries = select_queries(load_json(entry.queries), entry.selection)
             results = search_queries(retrieve, queries)
-            output_path = output_dir / f"{dataset_path.stem}_{rag_name}_results.json"
-            save_json(results, output_path)
-            print(f"Results saved to {output_path}")
-            runs[f"{dataset_path.stem}_{rag_name}"] = results
+            output_path = output_dir / f"{entry.path.stem}_{rag_name}_results.json"
+            merge_json(results, output_path)
+            runs[f"{entry.path.stem}_{rag_name}"] = results
     return runs
