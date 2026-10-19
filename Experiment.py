@@ -32,8 +32,14 @@ def append_run_info(folder, lines):
     with open(folder / "run_info.txt", "a", encoding="utf-8") as target:
         target.write("\n".join(lines) + "\n")
 
+def get_setting(config, key):
+    return next((value for name, value in config.items() if name.lower() == key.lower()), None)
+
 def is_enabled(config, key):
-    return any(
-        name.lower() == key.lower() and str(value).lower() == "true"
-        for name, value in config.items()
-    )
+    return str(get_setting(config, key)).lower() == "true"
+
+def get_methods(config, key):
+    value = get_setting(config, key) or []
+    if isinstance(value, str):
+        value = [value]
+    return [method for method in value if method.lower() != "false"]

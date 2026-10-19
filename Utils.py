@@ -1,4 +1,4 @@
-# For loading saving and path finding
+# General JSON functions
 import json
 
 def load_json(path):
