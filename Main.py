@@ -3,6 +3,7 @@ from BiasDetectionMethods.gendered_word_count_report import BiasReport, corpus_t
 from Datasets import resolve_datasets
 from Experiment import append_run_info, create_experiment_dir, get_methods, is_enabled, load_experiment
 from Generation import generate_summaries
+from Rag.topk import top_k_values
 from Rag.pipeline import run_rag, use_all_documents
 
 def run_entry(entry, config, rag_names, output_dir):
@@ -14,7 +15,7 @@ def run_entry(entry, config, rag_names, output_dir):
     if methods:
         report.run_stage("corpus", methods, corpus_texts([entry]))
 
-    runs = run_rag(rag_names, [entry], output_dir)
+    runs = run_rag(rag_names, [entry], output_dir, top_k_values(config))
     methods = get_methods(config, "ragBiasTesting")
     if methods:
         report.run_stage("rag", methods, rag_texts(runs))

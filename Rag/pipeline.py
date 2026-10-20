@@ -1,9 +1,8 @@
 # Manages chosen rag method/s
 import importlib
 from Datasets import select_queries
+from Rag.topk import resolve_top_k, top_k_label
 from Utils import load_json, merge_json
-
-TOP_K = 10
 
 def load_documents(dataset_path):
     documents = [
@@ -14,12 +13,12 @@ def load_documents(dataset_path):
         raise ValueError(f"No documents found in {dataset_path}")
     return documents
 
-def search_queries(retrieve, queries):
+def search_queries(retrieve, queries, top_k):
     results = {}
     for query_id, query_text in queries.items():
         results[query_id] = {
             "query": query_text,
-            "results": retrieve(query_text, TOP_K),
+            "results": retrieve(query_text, top_k),
         }
     return results
 
@@ -42,15 +41,16 @@ def get_retriever(rag_name, rag, entry):
         retrievers[key] = rag.build_retriever(load_documents(entry.path), entry.path.stem)
     return retrievers[key]
 
-def run_rag(rag_names, datasets, output_dir):
+def run_rag(rag_names, datasets, output_dir, top_ks=(None,)):
     runs = {}
     for rag_name in rag_names:
         rag = importlib.import_module(f"Rag.{rag_name}")
         for entry in datasets:
             retrieve = get_retriever(rag_name, rag, entry)
             queries = select_queries(load_json(entry.queries), entry.selection)
-            results = search_queries(retrieve, queries)
-            output_path = output_dir / f"{entry.path.stem}_{rag_name}_results.json"
-            merge_json(results, output_path)
-            runs[f"{entry.path.stem}_{rag_name}"] = results
+            for top_k in top_ks:
+                label = f"{entry.path.stem}_{rag_name}{top_k_label(top_k)}"
+                results = search_queries(retrieve, queries, resolve_top_k(top_k))
+                merge_json(results, output_dir / f"{label}_results.json")
+                runs[label] = results
     return runs
