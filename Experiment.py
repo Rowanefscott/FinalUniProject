@@ -35,8 +35,9 @@ def get_setting(config, key):
 def is_enabled(config, key):
     return str(get_setting(config, key)).lower() == "true"
 
-def get_methods(config, key):
-    value = get_setting(config, key) or []
+def get_stage_list(config, key, stage, ignore=()):
+    setting = get_setting(config, key) or {}
+    value = next((names for name, names in setting.items() if name.lower() == stage.lower()), [])
     if isinstance(value, str):
         value = [value]
-    return [method for method in value if method.lower() != "false"]
+    return [name for name in value if name.lower() not in ignore]

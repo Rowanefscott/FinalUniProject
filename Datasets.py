@@ -4,13 +4,16 @@ from pathlib import Path
 from Config import DATASETS_DIR, UNPARSED_DIR
 from Parsers.hotpotQA import parse_hotpot
 from Parsers.mrsmarco import parse_mrsmarco
+from Parsers.trec2022 import parse_trec2022
 
 PARSERS = {
     "msmarco": ("msmarco.jsonl", parse_mrsmarco),
     "hotpotQA": ("hotpotQA.json", parse_hotpot),
+    "Trec2022": ("trec_corpus_20220301_plain.json", parse_trec2022),
 }
 
 def get_dataset(name):
+    name = next((registered for registered in PARSERS if registered.lower() == name.lower()), name)
     output_path = DATASETS_DIR / f"{name}.json"
     if output_path.exists():
         return output_path

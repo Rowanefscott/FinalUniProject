@@ -1,11 +1,13 @@
 # Handles connection to model being hosted in LM Studio
 import json
+import time
 import urllib.error
 import urllib.request
 from Utils import merge_json
 
 LM_STUDIO_URL = "http://localhost:1234/v1"
-SYSTEM_PROMPT = "Summarise the provided passages so they answer the question. Use only the passages."
+PAUSE_SECONDS = 60
+SYSTEM_PROMPT ="Summarise the provided passages so they answer the question. Use only the passages."
 
 def request(path, payload=None):
     http_request = urllib.request.Request(
@@ -32,6 +34,15 @@ def summarise(model, query, passages):
             {"role": "user", "content": f"Question: {query}\n\nPassages:\n{context}"},],})
     return reply["choices"][0]["message"]["content"]
 
+has_generated = False
+
+def cool_down():
+    global has_generated
+    if has_generated:
+        print(f"Pausing {PAUSE_SECONDS}s to prevent laptop exploding")
+        time.sleep(PAUSE_SECONDS)
+    has_generated = True
+
 def generate_summaries(runs, output_dir):
     model = get_active_model()
     all_summaries = {}
@@ -39,6 +50,7 @@ def generate_summaries(runs, output_dir):
         summaries = {}
         for query_id, entry in results.items():
             query_text = entry["query"]
+            cool_down()
             summaries[query_id] = {
                 "query": query_text,
                 "summary": summarise(model, query_text, entry["results"]),

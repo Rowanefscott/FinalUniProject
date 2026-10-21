@@ -1,4 +1,4 @@
-# Combines BM25 and dense rankings with reciprocal rank fusion
+# Uses BM25 with dense embeddings
 from Rag import bm25, dense
 
 CANDIDATES = 50

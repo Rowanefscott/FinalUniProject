@@ -1,5 +1,7 @@
 # General JSON functions
+import importlib
 import json
+import pkgutil
 
 def load_json(path):
     with open(path, "r", encoding="utf-8") as source:
@@ -16,3 +18,15 @@ def save_json(data, path):
 def merge_json(data, path):
     existing = load_json(path) if path.exists() else {}
     save_json({**existing, **data}, path)
+
+
+def normalise_name(name):
+    return name.lower().replace("_", "").replace(" ", "")
+
+
+def load_component(package, name):
+    available = [module.name for module in pkgutil.iter_modules(importlib.import_module(package).__path__)]
+    match = next((module for module in available if normalise_name(module) == normalise_name(name)), None)
+    if match is None:
+        raise ValueError(f"No '{name}' in {package}. Available: {', '.join(available)}")
+    return importlib.import_module(f"{package}.{match}")

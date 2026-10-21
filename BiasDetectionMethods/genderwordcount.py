@@ -65,11 +65,17 @@ def measure(texts):
     return {
         "documents": len(document_percents),
         "total_words": total_words,
+        "gendered_words": male + female,
+        "male_words": male,
+        "female_words": female,
         "gendered_percent": percent(male + female, total_words),
         "male_percent": percent(male, total_words),
         "female_percent": percent(female, total_words),
         "male_to_female_ratio": male / female if female else None,
         "skew": (male - female) / (male + female) if male + female else 0.0,
+        "unique_gendered_terms": len(terms_by_gender["m"]) + len(terms_by_gender["f"]),
+        "documents_with_gendered_terms_percent": percent(documents_with_terms, len(document_percents)),
+        "mean_document_gendered_percent": sum(document_percents) / len(document_percents) if document_percents else 0.0,
         "top_male_terms": format_top(terms_by_gender["m"]),
         "top_female_terms": format_top(terms_by_gender["f"]),
     }
