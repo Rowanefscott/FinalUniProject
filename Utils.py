@@ -30,3 +30,8 @@ def load_component(package, name):
     if match is None:
         raise ValueError(f"No '{name}' in {package}. Available: {', '.join(available)}")
     return importlib.import_module(f"{package}.{match}")
+
+
+def sections(items, size):
+    for start in range(0, len(items), size):
+        yield items[start:start + size]

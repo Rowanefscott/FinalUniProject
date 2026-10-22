@@ -13,6 +13,9 @@ def load_documents(dataset_path):
         raise ValueError(f"No documents found in {dataset_path}")
     return documents
 
+def load_entry_documents(entry):
+    return load_documents(entry.path)[:entry.limit]
+
 def search_queries(retrieve, queries, top_k):
     results = {}
     for query_id, query_text in queries.items():
@@ -25,7 +28,7 @@ def search_queries(retrieve, queries, top_k):
 def use_all_documents(datasets):
     runs = {}
     for entry in datasets:
-        documents = load_documents(entry.path)
+        documents = load_entry_documents(entry)
         queries = select_queries(load_json(entry.queries), entry.selection)
         runs[entry.path.stem] = {
             query_id: {"query": query_text, "results": documents}
@@ -36,9 +39,9 @@ def use_all_documents(datasets):
 retrievers = {}
 
 def get_retriever(rag_name, rag, entry):
-    key = (rag_name, entry.path.stem)
+    key = (rag_name, entry.path.stem, entry.limit)
     if key not in retrievers:
-        retrievers[key] = rag.build_retriever(load_documents(entry.path), entry.path.stem)
+        retrievers[key] = rag.build_retriever(load_entry_documents(entry), entry.path.stem)
     return retrievers[key]
 
 def run_rag(rag_names, datasets, output_dir, top_ks=(None,)):
