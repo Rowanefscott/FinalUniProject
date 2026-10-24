@@ -32,6 +32,10 @@ def load_component(package, name):
     return importlib.import_module(f"{package}.{match}")
 
 
+def file_name(label, suffix, extension):
+    first, *rest = label.split("_") + [suffix]
+    return first + "".join(part[:1].upper() + part[1:] for part in rest) + "." + extension
+
 def sections(items, size):
     for start in range(0, len(items), size):
         yield items[start:start + size]

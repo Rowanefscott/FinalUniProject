@@ -6,7 +6,7 @@ import string
 def parse_hotpot(input_path, output_path, answers_path=None):
     output_path = Path(output_path)
     if answers_path is None:
-        answers_path = output_path.parent / "hotpotQA_answers.json"
+        answers_path = output_path.parent / "hotpotQAAnswers.json"
     else:
         answers_path = Path(answers_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)

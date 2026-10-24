@@ -3,7 +3,7 @@ import re
 from bisect import bisect_left
 from collections import Counter
 from functools import lru_cache
-from Config import GENDERED_NOUNS_FILE
+from config import GENDERED_NOUNS_FILE
 
 COMPARE = ["gendered_percent", "male_percent", "female_percent", "skew"]
 TOP_TERMS = 5

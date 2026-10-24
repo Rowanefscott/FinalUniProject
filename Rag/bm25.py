@@ -3,8 +3,8 @@ import os
 import re
 import shutil
 import pyterrier as pt
-from Config import INDEXES_DIR
-from Utils import sections
+from config import INDEXES_DIR
+from utils import sections
 
 SECTION_SIZE = 5000
 
@@ -35,7 +35,7 @@ def merge_indexes(first, second, destination):
         index.close()
 
 def add_section(index_path, documents):
-    section_path, merged_path, old_path = (sibling(index_path, suffix) for suffix in ("_section", "_merged", "_old"))
+    section_path, merged_path, old_path = (sibling(index_path, suffix) for suffix in ("Section", "Merged", "Old"))
     for path in (section_path, merged_path, old_path):
         remove(path)
     pt.IterDictIndexer(str(section_path), meta={"docno": 100, "text": 4096}, overwrite=True).index(
@@ -52,9 +52,9 @@ def add_section(index_path, documents):
     remove(section_path)
 
 def load_or_extend_index(documents, dataset_name):
-    index_path = (INDEXES_DIR / f"{dataset_name}_bm25_index").resolve()
+    index_path = (INDEXES_DIR / f"{dataset_name}Bm25Index").resolve()
     INDEXES_DIR.mkdir(parents=True, exist_ok=True)
-    old_path = sibling(index_path, "_old")
+    old_path = sibling(index_path, "Old")
     if not has_index(index_path) and has_index(old_path):
         remove(index_path)
         os.replace(old_path, index_path)

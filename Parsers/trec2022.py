@@ -3,7 +3,7 @@
 import json
 from itertools import islice
 from pathlib import Path
-from Utils import load_json, save_json
+from utils import load_json, save_json
 
 SECTION_SIZE = 1000
 END_OF_FILE = b"\n]\n"
@@ -35,7 +35,7 @@ def to_passage(entry):
 
 def parse_trec2022(input_path, output_path, limit=None, answers_path=None):
     output_path = Path(output_path)
-    answers_path = Path(answers_path) if answers_path else output_path.parent / f"{output_path.stem}_answers.json"
+    answers_path = Path(answers_path) if answers_path else output_path.parent / f"{output_path.stem}Answers.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     parsed = count_parsed(output_path)

@@ -1,5 +1,5 @@
 # Experiment setting to change number of retrieved docs
-from Experiment import get_setting
+from experiment import get_setting
 
 DEFAULT_TOP_K = 10
 

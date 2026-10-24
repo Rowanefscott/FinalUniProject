@@ -2,16 +2,15 @@
 import re
 from collections import namedtuple
 from pathlib import Path
-from Config import DATASETS_DIR, UNPARSED_DIR
-from Parsers.hotpotQA import parse_hotpot
-from Parsers.mrsmarco import parse_mrsmarco
-from Parsers.trec2022 import parse_trec2022
+from config import DATASETS_DIR, UNPARSED_DIR
+from parsers.hotpotQA import parse_hotpot
+from parsers.mrsMarco import parse_mrsmarco
+from parsers.trec2022 import parse_trec2022
 
-# name -> (unparsed file, parser, partial). Partial parsers hold one passage per query and parse only as many as a selection needs
 PARSERS = {
     "msmarco": ("msmarco.jsonl", parse_mrsmarco, False),
     "hotpotQA": ("hotpotQA.json", parse_hotpot, False),
-    "Trec2022": ("trec_corpus_20220301_plain.json", parse_trec2022, True),
+    "trec2022": ("trecCorpus20220301Plain.json", parse_trec2022, True),
 }
 
 def find_parser_name(name):

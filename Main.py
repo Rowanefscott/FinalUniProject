@@ -1,10 +1,10 @@
 import sys
-from BiasReport import BiasReport, corpus_texts, generated_texts, retrieved_texts
-from Datasets import resolve_datasets
-from Experiment import append_run_info, create_experiment_dir, get_stage_list, is_enabled, load_experiment
-from Generation import generate_summaries
-from Rag.topk import top_k_values
-from Rag.pipeline import run_rag, use_all_documents
+from biasReport import BiasReport, corpus_texts, generated_texts, retrieved_texts
+from datasetManager import resolve_datasets
+from experiment import append_run_info, create_experiment_dir, get_stage_list, is_enabled, load_experiment
+from generation import generate_summaries
+from rag.topK import top_k_values
+from rag.pipeline import run_rag, use_all_documents
 
 NO_DETECTION = ("normal", "none", "false")
 

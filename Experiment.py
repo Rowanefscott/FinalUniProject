@@ -1,7 +1,7 @@
 # Loads the experiment specification, notes time/date and organises into folder
 from datetime import datetime
-from Config import EXPERIMENTS_DIR, EXPERIMENTS_FILE
-from Utils import load_json
+from config import EXPERIMENTS_DIR, EXPERIMENTS_FILE
+from utils import load_json
 
 def load_experiment(name):
     experiments = load_json(EXPERIMENTS_FILE)
@@ -17,7 +17,7 @@ def create_experiment_dir(name, description=""):
         folder = EXPERIMENTS_DIR / f"{name}{count}"
         count += 1
     folder.mkdir()
-    (folder / "run_info.txt").write_text(
+    (folder / "runInfo.txt").write_text(
         f"Experiment: {name}\n"
         f"Run at: {datetime.now():%Y-%m-%d %H:%M:%S}\n"
         f"Description: {description}\n",
@@ -26,7 +26,7 @@ def create_experiment_dir(name, description=""):
     return folder
 
 def append_run_info(folder, lines):
-    with open(folder / "run_info.txt", "a", encoding="utf-8") as target:
+    with open(folder / "runInfo.txt", "a", encoding="utf-8") as target:
         target.write("\n".join(lines) + "\n")
 
 def get_setting(config, key):

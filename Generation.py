@@ -3,7 +3,7 @@ import json
 import time
 import urllib.error
 import urllib.request
-from Utils import merge_json
+from utils import file_name, merge_json
 
 LM_STUDIO_URL = "http://localhost:1234/v1"
 PAUSE_SECONDS = 60
@@ -57,7 +57,7 @@ def generate_summaries(runs, output_dir):
                 "summary": summarise(model, query_text, entry["results"]),
             }
         all_summaries[label] = summaries
-        output_path = output_dir / f"{label}_summaries.json"
+        output_path = output_dir / file_name(label, "summaries", "json")
         merge_json(summaries, output_path)
         print(f"Summaries saved to {output_path}")
     return all_summaries

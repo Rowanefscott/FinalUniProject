@@ -1,8 +1,7 @@
 # Manages chosen rag method/s
-import importlib
-from Datasets import select_queries
-from Rag.topk import resolve_top_k, top_k_label
-from Utils import load_json, merge_json
+from datasetManager import select_queries
+from rag.topK import resolve_top_k, top_k_label
+from utils import file_name, load_component, load_json, merge_json
 
 def load_documents(dataset_path):
     documents = [
@@ -47,13 +46,13 @@ def get_retriever(rag_name, rag, entry):
 def run_rag(rag_names, datasets, output_dir, top_ks=(None,)):
     runs = {}
     for rag_name in rag_names:
-        rag = importlib.import_module(f"Rag.{rag_name}")
+        rag = load_component("rag", rag_name)
         for entry in datasets:
             retrieve = get_retriever(rag_name, rag, entry)
             queries = select_queries(load_json(entry.queries), entry.selection)
             for top_k in top_ks:
                 label = f"{entry.path.stem}_{rag_name}{top_k_label(top_k)}"
                 results = search_queries(retrieve, queries, resolve_top_k(top_k))
-                merge_json(results, output_dir / f"{label}_results.json")
+                merge_json(results, output_dir / file_name(label, "results", "json"))
                 runs[label] = results
     return runs

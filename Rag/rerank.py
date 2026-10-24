@@ -1,6 +1,6 @@
 # Reorders BM25 docs with a cross encoder
 from sentence_transformers import CrossEncoder
-from Rag import bm25
+from rag import bm25
 
 MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 CANDIDATES = 50
