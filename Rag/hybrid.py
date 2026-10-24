@@ -1,5 +1,5 @@
 # Uses BM25 with dense embeddings
-from Rag import bm25, dense
+from rag import bm25, dense
 
 CANDIDATES = 50
 RRF_K = 60

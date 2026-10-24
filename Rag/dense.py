@@ -2,8 +2,8 @@
 import os
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from Config import INDEXES_DIR
-from Utils import sections
+from config import INDEXES_DIR
+from utils import sections
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 SECTION_SIZE = 500
