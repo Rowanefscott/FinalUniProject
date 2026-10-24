@@ -51,11 +51,11 @@ def generate_summaries(runs, output_dir):
         for query_id, entry in results.items():
             query_text = entry["query"]
             cool_down()
+            print(f"Generating summary {query_id}: {query_text}")
             summaries[query_id] = {
                 "query": query_text,
                 "summary": summarise(model, query_text, entry["results"]),
             }
-            print(f"Completed query {query_id}: {query_text}")
         all_summaries[label] = summaries
         output_path = output_dir / f"{label}_summaries.json"
         merge_json(summaries, output_path)
